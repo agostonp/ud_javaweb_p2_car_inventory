@@ -15,7 +15,7 @@ public class CarResourceAssembler implements RepresentationModelAssembler<Car, E
 
     @Override
     public EntityModel<Car> toModel(Car car) {
-        return new EntityModel<>(car,
+        return EntityModel.of(car,
                 linkTo(methodOn(CarController.class).get(car.getId())).withSelfRel(),
                 linkTo(methodOn(CarController.class).list()).withRel("cars"));
 
