@@ -45,9 +45,9 @@ class CarController {
      */
     @GetMapping
     CollectionModel<EntityModel<Car>> list() {
-        List<EntityModel<Car>> resources = carService.list().stream().map(assembler::toResource)
+        List<EntityModel<Car>> collectionModel = carService.list().stream().map(assembler::toModel)
                 .collect(Collectors.toList());
-        return new CollectionModel<>(resources,
+        return CollectionModel.of(collectionModel,
                 linkTo(methodOn(CarController.class).list()).withSelfRel());
     }
 
@@ -79,8 +79,8 @@ class CarController {
          * TODO: Use the `assembler` on that saved car and return as part of the response.
          *   Update the first line as part of the above implementing.
          */
-        EntityModel<Car> resource = assembler.toModel(new Car());
-        return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
+        EntityModel<Car> entityModel = assembler.toModel(new Car());
+        return ResponseEntity.created(new URI(entityModel.getRequiredLink("self").getHref())).body(entityModel);
     }
 
     /**
@@ -97,8 +97,8 @@ class CarController {
          * TODO: Use the `assembler` on that updated car and return as part of the response.
          *   Update the first line as part of the above implementing.
          */
-        EntityModel<Car> resource = assembler.toModel(new Car());
-        return ResponseEntity.ok(resource);
+        EntityModel<Car> entityModel = assembler.toModel(new Car());
+        return ResponseEntity.ok(entityModel);
     }
 
     /**
