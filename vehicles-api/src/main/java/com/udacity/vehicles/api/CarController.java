@@ -80,6 +80,7 @@ class CarController {
          * DONE: Use the `assembler` on that saved car and return as part of the response.
          *   Update the first line as part of the above implementing.
          */
+        car.setId(null); // This is to ensure insert instead of update
         Car newCar = carService.save(car);
         EntityModel<Car> entityModel = assembler.toModel(newCar);
         return ResponseEntity.created(new URI(entityModel.getRequiredLink("self").getHref())).body(entityModel);
