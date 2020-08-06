@@ -24,21 +24,21 @@ public class VehiclesApiApplication {
         SpringApplication.run(VehiclesApiApplication.class, args);
     }
 
-    /**
+    /** ************   MOVED to data.sql!
      * Initializes the car manufacturers available to the Vehicle API.
      * @param repository where the manufacturer information persists.
      * @return the car manufacturers to add to the related repository
      */
-    @Bean
-    CommandLineRunner initDatabase(ManufacturerRepository repository) {
-        return args -> {
-            repository.save(new Manufacturer(100, "Audi"));
-            repository.save(new Manufacturer(101, "Chevrolet"));
-            repository.save(new Manufacturer(102, "Ford"));
-            repository.save(new Manufacturer(103, "BMW"));
-            repository.save(new Manufacturer(104, "Dodge"));
-        };
-    }
+    // @Bean
+    // CommandLineRunner initDatabase(ManufacturerRepository repository) {
+    //     return args -> {
+    //         repository.save(new Manufacturer(100, "Audi"));
+    //         repository.save(new Manufacturer(101, "Chevrolet"));
+    //         repository.save(new Manufacturer(102, "Ford"));
+    //         repository.save(new Manufacturer(103, "BMW"));
+    //         repository.save(new Manufacturer(104, "Dodge"));
+    //     };
+    // }
 
     @Bean
     public ModelMapper modelMapper() {
