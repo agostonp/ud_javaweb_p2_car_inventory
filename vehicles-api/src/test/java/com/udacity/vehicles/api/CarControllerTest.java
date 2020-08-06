@@ -1,14 +1,14 @@
 package com.udacity.vehicles.api;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+// import static org.hamcrest.Matchers.hasSize;
+// import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.udacity.vehicles.client.maps.MapsClient;
@@ -21,6 +21,7 @@ import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.service.CarService;
 import java.net.URI;
 import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,10 +40,12 @@ import org.springframework.test.web.servlet.MockMvc;
  * Implements testing of the CarController class.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 public class CarControllerTest {
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private MockMvc mvc;
@@ -80,8 +84,8 @@ public class CarControllerTest {
         mvc.perform(
                 post(new URI("/cars"))
                         .content(json.write(car).getJson())
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
 
@@ -92,11 +96,13 @@ public class CarControllerTest {
     @Test
     public void listCars() throws Exception {
         /**
-         * TODO: Add a test to check that the `get` method works by calling
+         * DONE: Add a test to check that the `get` method works by calling
          *   the whole list of vehicles. This should utilize the car from `getCar()`
          *   below (the vehicle will be the first in the list).
          */
-
+        mvc.perform(get("/cars/"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/hal+json"));
     }
 
     /**
@@ -106,9 +112,12 @@ public class CarControllerTest {
     @Test
     public void findCar() throws Exception {
         /**
-         * TODO: Add a test to check that the `get` method works by calling
+         * DONE: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        mvc.perform(get("/cars/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/hal+json"));
     }
 
     /**
@@ -118,16 +127,19 @@ public class CarControllerTest {
     @Test
     public void deleteCar() throws Exception {
         /**
-         * TODO: Add a test to check whether a vehicle is appropriately deleted
+         * DONE: Add a test to check whether a vehicle is appropriately deleted
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
+        mvc.perform(delete("/cars/1"))
+                .andExpect(status().is2xxSuccessful()); 
     }
 
     /**
      * Creates an example Car object for use in testing.
      * @return an example Car object
      */
+    //private final String carAsJsonString = "{\"id\":1,\"createdAt\":null,\"modifiedAt\":null,\"condition\":\"USED\",\"details\":{\"body\":\"sedan\",\"model\":\"Impala\",\"manufacturer\":{\"code\":101,\"name\":\"Chevrolet\"},\"numberOfDoors\":4,\"fuelType\":\"Gasoline\",\"engine\":\"3.6L V6\",\"mileage\":32280,\"modelYear\":2018,\"productionYear\":2018,\"externalColor\":\"white\"},\"location\":{\"lat\":40.73061,\"lon\":-73.935242,\"address\":null,\"city\":null,\"state\":null,\"zip\":null},\"price\":null";
     private Car getCar() {
         Car car = new Car();
         car.setLocation(new Location(40.730610, -73.935242));
